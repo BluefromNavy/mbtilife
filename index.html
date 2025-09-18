@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBTI 스테이터스</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        .card {
+            background-color: #2d3748; /* bg-gray-800 */
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            cursor: pointer;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(99, 179, 237, 0.3), 0 4px 6px -2px rgba(99, 179, 237, 0.15);
+        }
+        .concept-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .concept-btn.active {
+            background-color: #4299e1; /* bg-blue-500 */
+            color: white;
+            transform: scale(1.05);
+        }
+        #detail-view {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .attribute-tag {
+            background-color: #4A5568; /* bg-gray-600 */
+            color: #E2E8F0; /* text-gray-200 */
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+
+    <aside id="left-ad" class="hidden xl:flex fixed top-0 left-0 h-full w-40 bg-gray-900 border-r border-gray-700 z-10 flex-col items-center justify-center space-y-4 p-4">
+        <div class="text-center text-gray-500">
+            <p class="font-bold text-sm">광고 배너</p>
+            <div class="w-28 h-48 bg-gray-800 mt-2 mx-auto flex items-center justify-center text-gray-600 rounded-md">AD</div>
+            <div class="w-28 h-48 bg-gray-800 mt-4 mx-auto flex items-center justify-center text-gray-600 rounded-md">AD</div>
+        </div>
+    </aside>
+
+    <aside id="right-ad" class="hidden xl:flex fixed top-0 right-0 h-full w-40 bg-gray-900 border-l border-gray-700 z-10 flex-col items-center justify-center space-y-4 p-4">
+        <div class="text-center text-gray-500">
+            <p class="font-bold text-sm">광고 배너</p>
+            <div class="w-28 h-48 bg-gray-800 mt-2 mx-auto flex items-center justify-center text-gray-600 rounded-md">AD</div>
+            <div class="w-28 h-48 bg-gray-800 mt-4 mx-auto flex items-center justify-center text-gray-600 rounded-md">AD</div>
+        </div>
+    </aside>
+    
+    <div class="xl:px-40">
+        <div class="container mx-auto p-4 md:p-8">
+            <header class="text-center mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-blue-400">MBTI 스테이터스</h1>
+                <p class="text-gray-400 mt-2">알고 싶은 컨셉을 선택하여 MBTI 유형별 특징을 확인해 보세요.</p>
+            </header>
+
+            <div id="main-content">
+                <nav id="concept-selector" class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8">
+                    </nav>
+
+                <main>
+                    <h2 id="current-concept-title" class="text-3xl font-bold text-center mb-10 text-blue-300"></h2>
+                    <div id="mbti-groups-container">
+                        <div class="mb-12">
+                            <h3 class="text-2xl font-bold border-l-4 border-blue-400 pl-3 mb-2 text-blue-200">SJ 기질: 수호자 (Guardian)</h3>
+                            <p class="text-gray-400 mb-6 pl-4">경험을 통해 현실을 파악하고, 사회적 규범과 질서를 중시하여 안정적인 공동체를 유지하고자 합니다.</p>
+                            <div id="sj-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"></div>
+                        </div>
+                        <div class="mb-12">
+                             <h3 class="text-2xl font-bold border-l-4 border-yellow-400 pl-3 mb-2 text-yellow-200">SP 기질: 장인 (Artisan)</h3>
+                             <p class="text-gray-400 mb-6 pl-4">현재 이 순간의 구체적인 경험을 중시하며, 규칙에 얽매이기보다는 자유와 자율성을 추구합니다.</p>
+                             <div id="sp-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"></div>
+                        </div>
+                        <div class="mb-12">
+                            <h3 class="text-2xl font-bold border-l-4 border-purple-400 pl-3 mb-2 text-purple-200">NT 기질: 합리주의자 (Rational)</h3>
+                            <p class="text-gray-400 mb-6 pl-4">복잡한 시스템의 원리와 논리적 법칙을 파악하고, 세상을 더 유능하고 합리적으로 만드는 데 관심이 많습니다.</p>
+                            <div id="nt-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"></div>
+                        </div>
+                        <div class="mb-12">
+                            <h3 class="text-2xl font-bold border-l-4 border-green-400 pl-3 mb-2 text-green-200">NF 기질: 이상주의자 (Idealist)</h3>
+                            <p class="text-gray-400 mb-6 pl-4">인간의 내면적 성장과 자아실현, 그리고 더 나은 미래의 가능성을 탐구하는 데 깊은 관심을 갖습니다.</p>
+                            <div id="nf-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"></div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <footer class="text-center mt-12 text-gray-500">
+            <p>&copy; 2025 MBTI Status Explorer. All rights reserved.</p>
+        </footer>
+    </div>
+    
+    <div id="detail-view" class="hidden fixed inset-0 bg-gray-900 bg-opacity-95 p-4 md:p-8 flex flex-col justify-center items-center z-50 overflow-y-auto">
+        <div id="detail-content-wrapper" class="w-full max-w-2xl bg-gray-800 rounded-lg p-6 md:p-8 border border-gray-700">
+            <div id="detail-content">
+                 </div>
+            <button id="back-button" class="mt-8 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-full transition-colors w-full">
+                뒤로가기
+            </button>
+        </div>
+    </div>
+
+
+    <script>
+        // --- 데이터 영역 ---
+        const mbtiAttributes = {
+            'ISTJ': { title: '현실적인 논리주의자', attributes: ['책임감', '현실적', '논리적', '체계적'] },
+            'ISFJ': { title: '헌신적인 수호자', attributes: ['헌신', '배려', '꼼꼼함', '안정지향'] },
+            'ESTJ': { title: '유능한 관리자', attributes: ['효율', '추진력', '체계적', '현실적'] },
+            'ESFJ': { title: '사교적인 외교관', attributes: ['사교성', '협력', '동정심', '조화'] },
+            'ISTP': { title: '만능 재주꾼', attributes: ['논리적', '실용적', '상황판단', '효율'] },
+            'ISFP': { title: '호기심 많은 예술가', attributes: ['겸손', '개방적', '미적감각', '융통성'] },
+            'ESTP': { title: '모험을 즐기는 사업가', attributes: ['순발력', '활동적', '현실적', '기회포착'] },
+            'ESFP': { title: '자유로운 영혼의 연예인', attributes: ['사교성', '에너지', '낙천적', '즉흥적'] },
+            'INTJ': { title: '용의주도한 전략가', attributes: ['전략적', '통찰력', '독립성', '체계적'] },
+            'INTP': { title: '논리적인 사색가', attributes: ['논리적', '분석적', '지적호기심', '객관적'] },
+            'ENTJ': { title: '대담한 통솔자', attributes: ['통솔력', '결단력', '전략적', '비전'] },
+            'ENTP': { title: '뜨거운 논쟁을 즐기는 변론가', attributes: ['독창성', '지적호기심', '논쟁', '다재다능'] },
+            'INFJ': { title: '선의의 옹호자', attributes: ['통찰력', '이상주의', '공감', '헌신'] },
+            'INFP': { title: '열정적인 중재자', attributes: ['이상주의', '진정성', '공감', '창의적'] },
+            'ENFJ': { title: '정의로운 사회운동가', attributes: ['카리스마', '이타주의', '영감', '공감'] },
+            'ENFP': { title: '재기발랄한 활동가', attributes: ['열정', '창의성', '사교성', '낙천적'] },
+        };
+
+        const mbtiData = {
+            'weapons': {
+                title: 'MBTI 유형별 중세 무기',
+                types: {
+                    'ISTJ': { name: '로마식 방패와 글라디우스', description: '검증된 제식 장비의 조합. 신뢰도 높은 방어와 효율적인 공격을 상징합니다.', detailedDescription: 'ISTJ는 내향 감각(Si)으로 과거부터 검증된 데이터와 경험을 신뢰하며, 외향 사고(Te)로 모든 것을 체계적이고 효율적으로 관리하고자 합니다. 로마 군단의 방패와 검 조합은 수많은 전투에서 증명된 가장 신뢰도 높은 전술 체계(Si)이며, 개인의 활약보다 대열의 규율과 효율성을 극대화(Te)하는 무기입니다. 이는 ISTJ의 가치관과 완벽히 일치합니다.', imageUrl: 'https://placehold.co/400x300/4A5568/E2E8F0?text=방패와+검' },
+                    'ISFJ': { name: '카이트 실드', description: '자신과 동료를 보호하는 데 최적화된, 헌신의 상징입니다.', detailedDescription: '내향 감각(Si)을 통해 자신이 속한 공동체의 안녕을 중요시하고, 외향 감정(Fe)으로 타인을 돕는 것에서 보람을 느끼는 ISFJ에게 카이트 실드는 완벽한 상징입니다. 이 방패는 기병의 측면을 보호하고, 보병 방진의 핵심이 되어 동료를 지키는 헌신적인 역할을 수행합니다. 이는 ISFJ의 조용하지만 굳건한 수호자적 기질을 보여줍니다.', imageUrl: 'https://placehold.co/400x300/4A5568/E2E8F0?text=카이트실드' },
+                    'ESTJ': { name: '롱소드', description: '기사단의 표준 무기이자 지휘관의 상징. 실용성과 리더십을 갖추었습니다.', detailedDescription: 'ESTJ는 외향 사고(Te)를 통해 외부 세계를 효율적으로 조직하고 이끌고자 합니다. 롱소드는 베기, 찌르기 등 다양한 상황에 대처 가능한 실용적인 표준 무기이자, 지휘관의 권위를 상징합니다. 검증된 검술(Si)을 바탕으로 전장을 논리적으로 지배하려는 ESTJ의 리더십과 가장 잘 어울리는 무기입니다.', imageUrl: 'https://placehold.co/400x300/4A5568/E2E8F0?text=롱소드' },
+                    'ESFJ': { name: '스피어 / 창', description: '혼자보다 함께일 때 가장 강력한 힘을 발휘하는 공동체의 무기입니다.', detailedDescription: '외향 감정(Fe)을 주기능으로 사용하는 ESFJ는 공동체의 조화와 협력을 가장 중요하게 생각합니다. 창은 개인이 사용할 때보다, 동료들과 함께 방진(Phalanx)을 구성했을 때 비로소 진정한 위력을 발휘하는 대표적인 집단 무기입니다. 이는 공동의 목표를 위해 기꺼이 협력하는 ESFJ의 가치관을 상징합니다.', imageUrl: 'https://placehold.co/400x300/4A5568/E2E8F0?text=창' },
+                    'ISTP': { name: '워해머 / 메이스', description: '갑옷의 약점을 논리적으로 분석하여 최대 효율로 적을 무력화하는 기술적인 무기입니다.', detailedDescription: 'ISTP는 내향 사고(Ti)를 통해 시스템의 원리를 분석하고, 외향 감각(Se)으로 현재 상황에 가장 효율적으로 대응합니다. 워해머는 갑옷의 구조적 약점을 정확히 타격하여 최소한의 힘으로 최대의 효과를 내는 무기입니다. 이는 화려함보다 실용성과 기능적 원리를 파고드는 ISTP의 장인 정신과 완벽하게 부합합니다.', imageUrl: 'https://placehold.co/400x300/4A5568/E2E8F0?text=워해머' },
+                    'ISFP': { name: '레이피어', description: '힘보다는 기교와 예술성으로 승부하는, 일대일 결투의 무기입니다.', detailedDescription: '내향 감정(Fi)을 통해 자신만의 가치와 미학을 추구하는 ISFP에게 레이피어는 자신을 표현하는 예술 도구와 같습니다. 힘이 아닌 섬세한 손목 움직임과 우아한 스텝(Se)으로 상대를 제압하는 레이피어 검술은, ISFP의 내면에 잠재된 예술가적 기질과 개성을 상징합니다.', imageUrl: 'https://placehold.co/400x300/4A5568/E2E8F0?text=레이피어' },
+                    'ESTP': { name: '쌍수 단검', description: '예측 불가능한 움직임으로 적을 혼란에 빠뜨리는 임기응변의 무기입니다.', detailedDescription: 'ESTP는 외향 감각(Se)을 통해 현재 상황을 누구보다 빠르게 파악하고, 내향 사고(Ti)로 즉각적인 해결책을 찾아냅니다. 쌍수 단검은 정해진 격식 없이 빠른 움직임과 예측 불가능한 공격으로 상대의 허를 찌르는 무기입니다. 이는 변화무쌍한 환경에 적응하며 기회를 포착하는 ESTP의 순발력과 재치를 상징합니다.', imageUrl: 'https://placehold.co/400x300/4A5568/E2E8F0?text=쌍수단검' },
+                    'ESFP': { name: '플레일', description: '시선을 사로잡는 독특한 움직임을 가진 쇼맨십의 무기입니다.', detailedDescription: '외향 감각(Se)으로 현재의 즐거움과 자극을 추구하는 ESFP는 타고난 엔터테이너입니다. 플레일은 방패로 막기 어려운 예측 불가능한 궤적과 화려한 움직임으로 전장에서 모든 이의 시선을 사로잡습니다. 전투를 하나의 무대처럼 즐기는 ESFP의 스타성과 가장 잘 어울리는 무기입니다.', imageUrl: 'https://placehold.co/400x300/4A5568/E2E8F0?text=플레일' },
+                    'INTJ': { name: '장궁', description: '전장의 판도를 멀리서 설계하는 전략가의 무기입니다.', detailedDescription: '내향 직관(Ni)으로 미래의 판도를 예측하고, 외향 사고(Te)로 장기적인 전략을 수립하는 INTJ에게 장궁은 완벽한 무기입니다. 직접적인 난투 대신, 멀리서 전장 전체를 조망하며 가장 효율적인 지점에 강력한 한 발을 날려 핵심을 무력화시키는 장궁의 운용 방식은 INTJ의 전략가적 면모 그 자체입니다.', imageUrl: 'https://placehold.co/400x300/4A5568/E2E8F0?text=장궁' },
+                    'INTP': { name: '할버드', description: '창, 도끼, 갈고리의 기능이 합쳐진 시스템적인 무기입니다.', detailedDescription: 'INTP는 내향 사고(Ti)를 통해 시스템의 논리적 원리를 파고들고, 외향 직관(Ne)으로 다양한 가능성을 탐색합니다. 창(찌르기), 도끼(베기), 갈고리(당기기)의 기능이 결합된 할버드는 하나의 도구로 수많은 변수에 대응할 수 있는 복합적인 시스템입니다. 이는 여러 가능성을 탐구하며 가장 효율적인 해결책을 찾는 INTP의 지적 유희를 만족시킵니다.', imageUrl: 'https://placehold.co/400x300/4A5568/E2E8F0?text=할버드' },
+                    'ENTJ': { name: '폴액스', description: '전장을 지배하고 통제하는 지휘관의 무기입니다.', detailedDescription: '외향 사고(Te)를 통해 목표를 향해 거침없이 나아가고, 내향 직관(Ni)으로 비전을 현실로 만드는 ENTJ에게 폴액스는 통솔력의 상징입니다. 압도적인 무게와 파괴력으로 적의 방어선을 무너뜨리고 길을 개척하는 이 무기는, 비전을 실현하기 위해 장애물을 제거하고 조직을 이끄는 ENTJ의 대담한 통솔자와 같습니다.', imageUrl: 'https://placehold.co/400x300/4A5568/E2E8F0?text=폴액스' },
+                    'ENTP': { name: '캘트롭스와 연막탄', description: '정면 대결의 규칙을 파괴하는 발상의 전환을 보여주는 도구입니다.', detailedDescription: '외향 직관(Ne)으로 기존의 틀을 깨는 아이디어를 끝없이 탐색하는 ENTP는 정면 승부보다 변칙적인 전략을 선호합니다. 마름쇠(Caltrops)로 기병의 돌격을 무력화하고 연막탄으로 혼란을 야기하는 방식은, 전투의 판 자체를 바꾸는 ENTP의 기발함과 논쟁을 즐기는 변론가적 기질을 보여줍니다.', imageUrl: 'https://placehold.co/400x300/4A5568/E2E8F0?text=캘트롭스' },
+                    'INFJ': { name: '은장 활', description: '신념을 위해 보이지 않는 곳에서 이상을 실현하는 통찰의 무기입니다.', detailedDescription: '내향 직관(Ni)으로 깊은 통찰력을 얻고, 외향 감정(Fe)으로 인류애적인 이상을 실현하고자 하는 INFJ의 모습은 은장 활과 닮았습니다. 화려하게 자신을 드러내지 않지만, 고요함 속에서 대의를 위해 정확하게 목표를 꿰뚫는 명사수처럼, INFJ는 보이지 않는 곳에서 세상을 더 나은 방향으로 이끌고자 노력합니다.', imageUrl: 'https://placehold.co/400x300/4A5568/E2E8F0?text=은장활' },
+                    'INFP': { name: '명검 / 물려받은 검', description: '그 안에 깃든 이야기와 가치를 위해 싸우는 신념의 무기입니다.', detailedDescription: 'INFP는 내향 감정(Fi)을 통해 자신의 진실된 가치와 신념을 가장 중요하게 여깁니다. 이들에게 무기는 단순한 쇠붙이가 아니라, 자신이 지키고자 하는 대의와 이야기가 깃든 상징물입니다. 전설 속 영웅이 명검을 들고 이상을 위해 싸우듯, INFP는 자신의 신념을 위해 상상 이상의 힘을 발휘합니다.', imageUrl: 'https://placehold.co/400x300/4A5568/E2E8F0?text=명검' },
+                    'ENFJ': { name: '전투 깃발 / 배너', description: '아군을 결집시키고 사기를 북돋우는 영감의 상징입니다.', detailedDescription: '외향 감정(Fe)으로 사람들을 이끌고, 내향 직관(Ni)으로 공동의 비전을 제시하는 ENFJ는 타고난 리더이자 선동가입니다. 전투 깃발은 직접적인 살상 무기는 아니지만, 흩어진 아군을 하나로 모으고 패배의 위기 속에서도 희망과 용기를 불어넣어 전세를 뒤집는 힘을 가집니다. 이는 사람들에게 영감을 주어 이끄는 ENFJ의 카리스마를 상징합니다.', imageUrl: 'https://placehold.co/400x300/4A5568/E2E8F0?text=전투깃발' },
+                    'ENFP': { name: '스태프 / 지팡이', description: '다양한 가능성을 지닌 잠재력의 무기입니다.', detailedDescription: '외향 직관(Ne)으로 무한한 가능성을 탐색하는 ENFP에게 스태프는 전투, 방어, 치유, 마법 등 다양한 용도로 활용될 수 있는 잠재력의 상징입니다. 하나의 목적에 얽매이지 않고, 자신의 신념(Fi)과 창의력에 따라 위기 상황을 기회로 바꾸는 ENFP의 재기발랄함과 가장 잘 어울리는 도구입니다.', imageUrl: 'https://placehold.co/400x300/4A5568/E2E8F0?text=스태프' },
+                }
+            },
+            'supercars': {
+                title: 'MBTI 유형별 슈퍼카',
+                types: {
+                    'ISTJ': { name: '포르쉐 911', description: '변치 않는 디자인과 기계적 신뢰성. 기본에 가장 충실한 명품입니다.', detailedDescription: 'ISTJ는 내향 감각(Si)을 통해 과거부터 검증된 데이터와 경험을 신뢰하며, 외향 사고(Te)를 통해 모든 것을 체계적이고 효율적으로 관리하고자 합니다. 포르쉐 911은 수십 년간 이어져 온 디자인 헤리티지(Si)와 타협 없는 기계적 완성도 및 성능(Te)을 동시에 갖추고 있습니다. 이는 전통을 존중하면서도 최고의 실용성과 신뢰성을 추구하는 ISTJ의 가치관을 완벽하게 반영하는, 단순한 슈퍼카가 아닌 잘 만들어진 \'시스템\' 그 자체입니다.', imageUrl: 'https://placehold.co/400x300/718096/E2E8F0?text=포르쉐+911' },
+                    'ISFJ': { name: '벤틀리 컨티넨탈 GT', description: '강력한 성능을 우아하고 부드러운 디자인으로 감싼 외유내강의 상징입니다.', detailedDescription: '내향 감각(Si)으로 안정감과 편안함을 중시하고, 외향 감정(Fe)으로 타인을 배려하는 ISFJ의 성향은 벤틀리 컨티넨탈 GT와 닮았습니다. 폭발적인 성능을 가졌지만 겉으로는 드러내지 않고, 탑승자를 안락하고 우아하게 감싸는 모습은, 타인에게 불편함을 주지 않으면서도 묵묵히 자신의 역할을 다하는 ISFJ의 헌신적인 성품을 상징합니다.', imageUrl: 'https://placehold.co/400x300/718096/E2E8F0?text=벤틀리' },
+                    'ESTJ': { name: '메르세데스-AMG GT', description: "최고가 아니면 만들지 않는다는 철학. 사회적 성공의 상징입니다.", detailedDescription: '외향 사고(Te)를 통해 명확한 목표와 성과를 중시하는 ESTJ에게 메르세데스-AMG GT는 사회적 성공과 유능함의 상징입니다. \'최고가 아니면 만들지 않는다\'는 브랜드의 확고한 철학(Si)은 ESTJ의 신뢰성에 대한 가치관과 일치하며, 강력한 성능으로 목표를 향해 거침없이 나아가는 모습은 ESTJ의 추진력을 그대로 보여줍니다.', imageUrl: 'https://placehold.co/400x300/718096/E2E8F0?text=AMG+GT' },
+                    'ESFJ': { name: '아우디 R8', description: '첨단 기술과 세련된 디자인의 조화. 주변 사람들과 함께 즐기기 좋은 이미지입니다.', detailedDescription: '외향 감정(Fe)을 통해 주변 사람들과의 관계와 조화를 중요하게 생각하는 ESFJ에게 아우디 R8은 완벽한 파트너입니다. 강력한 슈퍼카이면서도 비교적 운전이 편안하고 디자인이 세련되어 위압적이지 않습니다. 이는 주변 사람들에게 즐거움을 선사하고 싶어하며, 실용적인 안정감(Si)을 선호하는 ESFJ의 따뜻하고 사교적인 성향과 잘 어울립니다.', imageUrl: 'https://placehold.co/400x300/718096/E2E8F0?text=아우디+R8' },
+                    'ISTP': { name: '맥라렌 720S', description: '오직 성능과 효율성을 위해 모든 것이 설계된, 타협 없는 기능주의의 미학입니다.', detailedDescription: '내향 사고(Ti)로 기계의 원리를 분석하고, 외향 감각(Se)으로 현재의 퍼포먼스를 즐기는 ISTP에게 맥라렌 720S는 최고의 장난감입니다. 공기역학을 위해 설계된 차체, 모든 것이 운전자 중심으로 구성된 조종석 등 감성적인 부분을 배제하고 오직 기능과 효율성에만 집중한 모습은, ISTP의 실용주의적 장인 정신과 완벽하게 일치합니다.', imageUrl: 'https://placehold.co/400x300/718096/E2E8F0?text=맥라렌' },
+                    'ISFP': { name: '알파 로메오 4C', description: '실용성보다 운전의 감성적인 즐거움과 유니크한 디자인에 집중한 예술품입니다.', detailedDescription: '내향 감정(Fi)으로 자신만의 고유한 가치와 아름다움을 추구하는 ISFP에게 알파 로메오 4C는 단순한 자동차가 아닌 움직이는 예술품입니다. 불편한 승차감이나 부족한 편의사항에도 불구하고, 오직 순수한 운전의 즐거움(Se)과 심장을 뛰게 하는 디자인만으로 선택받는 이 차는, 세상의 기준보다 자신의 마음에 귀 기울이는 ISFP의 예술가적 영혼을 상징합니다.', imageUrl: 'https://placehold.co/400x300/718096/E2E8F0?text=알파로메오' },
+                    'ESTP': { name: '람보르기니 우라칸', description: '언제 어디서나 시선을 사로잡는 화려하고 공격적인 디자인. 넘치는 에너지의 상징입니다.', detailedDescription: '외향 감각(Se)으로 현재의 자극과 스릴을 즐기는 ESTP에게 람보르기니 우라칸은 최고의 파트너입니다. 전투기를 닮은 공격적인 디자인과 귀를 찢는 배기음은 어디서든 주목받길 원하는 ESTP의 성향을 만족시키며, 즉각적인 반응성(Ti)으로 짜릿한 운전의 재미를 선사합니다. 이는 인생을 즐기는 모험가 ESTP의 모습을 그대로 보여줍니다.', imageUrl: 'https://placehold.co/400x300/718096/E2E8F0?text=람보르기니' },
+                    'ESFP': { name: '페라리 포르토피노', description: "성능뿐만 아니라 '즐거운 인생'을 상징하는, 유쾌함 그 자체입니다.", detailedDescription: '외향 감각(Se)으로 사람들과 함께 현재의 즐거움을 만끽하는 ESFP에게 페라리 포르토피노는 \'인생의 즐거움\' 그 자체입니다. 지붕을 열고 아름다운 해안도로를 달리며 사람들의 시선과 바람을 즐기는 모습은, 주목받는 무대 위에서 자신의 매력을 발산하는 ESFP의 모습과 완벽하게 겹쳐집니다. 이 차는 성능을 넘어, 즐거운 순간을 공유하는(Fi) ESFP의 삶의 태도를 상징합니다.', imageUrl: 'https://placehold.co/400x300/718096/E2E8F0?text=페라리' },
+                    'INTJ': { name: '코닉세그 제메라', description: '기존 슈퍼카의 공식을 파괴한 혁신적인 기술력과 미래지향적 비전의 집약체입니다.', detailedDescription: '내향 직관(Ni)으로 미래를 예측하고, 외향 사고(Te)로 시스템을 혁신하는 INTJ에게 코닉세그 제메라는 단순한 차가 아닌, 미래에 대한 비전의 선언입니다. \'4인승 하이퍼카\'라는 기존의 상식을 파괴하는 개념과 혁신적인 기술들은, 세상을 더 효율적으로 재편하려는 INTJ의 원대한 계획과 통찰력을 상징합니다.', imageUrl: 'https://placehold.co/400x300/718096/E2E8F0?text=코닉세그' },
+                    'INTP': { name: '파가니 와이라', description: '예술과 공학의 경계를 허문 걸작. 기계적 구조를 탐구하는 즐거움을 줍니다.', detailedDescription: '내향 사고(Ti)로 복잡한 시스템의 논리를 탐구하는 것을 즐기는 INTP에게 파가니 와이라는 움직이는 시계의 무브먼트와 같습니다. 노출된 기어봉, 모든 부품이 예술품처럼 디자인된 내부는 INTP의 지적 호기심을 무한히 자극합니다. 다양한 아이디어(Ne)를 결합해 누구도 상상하지 못한 결과물을 만들어내는 이 차는 INTP의 창의성을 상징합니다.', imageUrl: 'https://placehold.co/400x300/718096/E2E8F0?text=파가니' },
+                    'ENTJ': { name: '부가티 시론', description: '가장 빠르다는 목표를 위해 인류 기술의 정점을 쏟아부은, 압도적인 지배자입니다.', detailedDescription: '외향 사고(Te)를 통해 \'최고\'라는 명확한 목표를 설정하고, 내향 직관(Ni)의 비전을 실현하기 위해 모든 자원을 동원하는 ENTJ의 모습은 부가티 시론 그 자체입니다. \'세상에서 가장 빠른 차\'라는 단 하나의 목표를 위해 공학 기술의 정점을 쏟아부어 경쟁자를 압도하는 모습은, 불가능해 보이는 비전을 현실로 만드는 ENTJ의 대담한 통솔력을 상징합니다.', imageUrl: 'https://placehold.co/400x300/718096/E2E8F0?text=부가티' },
+                    'ENTP': { name: '드 토마소 P72', description: '과거를 현대적으로 재해석하여 누구도 예상 못한 독창적인 디자인을 선보인 도전자입니다.', detailedDescription: '외향 직관(Ne)으로 끊임없이 새로운 아이디어를 탐색하고 기존의 틀에 도전하는 ENTP에게 드 토마소 P72는 지적인 자극 그 자체입니다. 과거의 레이싱카를 현대적으로 재해석한 독창적인 디자인은 보는 이들로 하여금 수많은 논쟁(Ti)을 불러일으킵니다. 이는 기존의 관념에 의문을 제기하고 뜨거운 토론을 즐기는 ENTP의 변론가적 기질을 완벽하게 보여줍니다.', imageUrl: 'https://placehold.co/400x300/718096/E2E8F0?text=드토마소' },
+                    'INFJ': { name: '롤스로이스 스펙터', description: '고요함과 신비로움 속에서 미래를 향해 나아가는 심오한 상징성을 가집니다.', detailedDescription: '내향 직관(Ni)으로 미래에 대한 깊은 통찰을 얻는 INFJ의 성향은 롤스로이스 스펙터의 철학과 맞닿아 있습니다. 시끄러운 내연기관 시대의 종말을 예고하고, 완벽한 고요함 속에서 미래를 향해 나아가는 이 차는 단순한 이동 수단이 아닌, 더 나은 미래를 향한 신념의 표현입니다. 이는 인류애(Fe)를 바탕으로 이상을 실현하고자 하는 INFJ의 모습을 상징합니다.', imageUrl: 'https://placehold.co/400x300/718096/E2E8F0?text=롤스로이스' },
+                    'INFP': { name: '싱어 포르쉐 911', description: '과거의 스토리에 새로운 생명을 불어넣어 세상에 단 하나뿐인 가치를 창조합니다.', detailedDescription: '내향 감정(Fi)으로 자신만의 진정한 가치를 추구하는 INFP에게 싱어 포르쉐는 완벽한 이상향입니다. 낡은 클래식카에 현대 기술과 장인 정신을 불어넣어 세상에 단 하나뿐인 작품으로 재탄생시키는 과정은, 과거의 경험에서 의미를 찾고 새로운 가능성(Ne)을 탐색하여 자신만의 이야기를 만들어가는 INFP의 삶과 닮았습니다.', imageUrl: 'https://placehold.co/400x300/718096/E2E8F0?text=싱어포르쉐' },
+                    'ENFJ': { name: '마세라티 MC20', description: '브랜드의 부활을 이끈 상징적인 모델. 열정적인 스토리로 사람들의 마음을 움직입니다.', detailedDescription: '외향 감정(Fe)으로 사람들에게 영감을 주고, 내향 직관(Ni)으로 공동의 비전을 제시하는 ENFJ에게 마세라티 MC20은 부활의 서사와 같습니다. 오랜 침체를 딛고 브랜드를 다시 정상으로 이끈 이 차의 열정적인 스토리는, 사람들의 잠재력을 이끌어내어 함께 성장하고자 하는 ENFJ의 카리스마 넘치는 리더십을 상징합니다.', imageUrl: 'https://placehold.co/400x300/718096/E2E8F0?text=마세라티' },
+                    'ENFP': { name: 'BMW i8', description: '시대를 앞서간 미래적인 디자인. 새로운 가능성을 제시한 혁신의 아이콘입니다.', detailedDescription: '외향 직관(Ne)으로 항상 새로운 가능성과 아이디어를 탐색하는 ENFP에게 BMW i8은 혁신의 상징입니다. 슈퍼카는 비효율적이라는 편견에 도전하며 하이브리드라는 새로운 길을 제시하고, 미래지향적인 디자인으로 사람들에게 신선한 충격을 주었습니다. 이는 긍정적인 신념(Fi)으로 세상을 더 나은 곳으로 만들고자 하는 ENFP의 재기발랄한 활동가 정신을 보여줍니다.', imageUrl: 'https://placehold.co/400x300/718096/E2E8F0?text=BMW+i8' },
+                }
+            },
+            'countries': {
+                title: 'MBTI 유형별 정착 국가/도시',
+                types: {
+                    'ISTJ': { name: '스위스, 취리히', description: '세계 최고 수준의 안전, 청결, 사회적 안정성. 근면 성실한 문화가 이상적입니다.', detailedDescription: '내향 감각(Si)을 통해 안정되고 예측 가능한 환경을 선호하는 ISTJ에게 스위스 취리히는 완벽한 곳입니다. 정확한 시간 개념, 높은 법치 수준, 그리고 모든 것이 체계적으로 관리되는(Te) 사회 시스템은 ISTJ에게 최고의 심리적 안정감을 제공합니다. 근면 성실함을 미덕으로 여기는 문화 속에서 ISTJ는 자신의 능력을 가장 잘 발휘할 수 있습니다.', imageUrl: 'https://placehold.co/400x300/2C5282/E2E8F0?text=취리히' },
+                    'ISFJ': { name: '캐나다, 오타와', description: '강력한 사회 복지 시스템과 친절하고 서로 돕는 공동체 문화가 안정감을 줍니다.', detailedDescription: '타인의 안녕을 중요하게 생각하고(Fe) 안정적인 소속감을 원하는(Si) ISFJ에게 캐나다 오타와는 이상적인 환경입니다. 서로 돕는 것을 당연하게 여기는 공동체 문화와 잘 갖춰진 사회 안전망은 ISFJ가 다른 사람들을 돌보는 데 집중할 수 있게 해줍니다. 이곳에서 ISFJ는 헌신적인 수호자로서의 자신의 가치를 실현하며 살아갈 수 있습니다.', imageUrl: 'https://placehold.co/400x300/2C5282/E2E8F0?text=오타와' },
+                    'ESTJ': { name: '싱가포르', description: '성과주의 문화, 강력한 법치, 효율적인 행정 시스템이 가치관에 부합합니다.', detailedDescription: '외향 사고(Te)를 통해 효율성과 결과를 중시하는 ESTJ에게 싱가포르는 능력과 성과로 인정받을 수 있는 최적의 무대입니다. 명확한 규칙(Si)과 강력한 법치를 기반으로 한 예측 가능한 사회 시스템은 ESTJ가 자신의 목표를 달성하는 데 최고의 환경을 제공합니다. 이곳에서 ESTJ는 유능한 관리자로서 사회를 이끌어가는 자신의 역할을 찾을 수 있습니다.', imageUrl: 'https://placehold.co/400x300/2C5282/E2E8F0?text=싱가포르' },
+                    'ESFJ': { name: '호주, 멜버른', description: '다양한 문화권의 사람들이 조화롭게 어울리며 강한 커뮤니티를 형성합니다.', detailedDescription: '외향 감정(Fe)을 통해 사람들과의 관계와 소속감을 중요하게 여기는 ESFJ에게 멜버른은 완벽한 도시입니다. 다양한 배경을 가진 사람들이 편견 없이 어울리며 활발한 커뮤니티를 형성하고 있으며, 끊임없는 축제와 사교 활동은 ESFJ가 사람들과 교류하며 에너지를 얻을 수 있게 해줍니다. 안정적인 생활 기반(Si) 위에서 따뜻한 관계를 맺으며 살아갈 수 있습니다.', imageUrl: 'https://placehold.co/400x300/2C5282/E2E8F0?text=멜버른' },
+                    'ISTP': { name: '핀란드, 헬싱키', description: '개인의 사생활을 존중하며, 원할 때 언제든 자연으로 떠날 수 있습니다.', detailedDescription: '독립적인 성향이 강하고(Ti) 개인의 자유를 중시하는 ISTP에게 핀란드 헬싱키는 최적의 환경을 제공합니다. 타인에게 불필요한 간섭을 하지 않는 사회적 거리감은 ISTP에게 편안함을 주며, 도시 가까이에 펼쳐진 광활한 자연은 언제든 실용적인 탐험(Se)을 떠날 수 있게 해줍니다. 실용적이고 미니멀한 디자인 또한 ISTP의 취향에 부합합니다.', imageUrl: 'https://placehold.co/400x300/2C5282/E2E8F0?text=헬싱키' },
+                    'ISFP': { name: '포르투갈, 리스본', description: '느긋하고 여유로운 삶의 태도와 예술적인 분위기가 매력적입니다.', detailedDescription: '자신의 내면의 가치(Fi)에 따라 자유롭게 살아가길 원하는 ISFP에게 리스본의 느긋한 분위기는 완벽한 안식처입니다. 삶의 여유를 즐기고, 현재의 감각적 즐거움(Se)을 중요하게 여기는 문화 속에서 ISFP는 비로소 자신답게 살아갈 수 있습니다. 도시 곳곳에 스며든 예술과 감성은 ISFP의 예술가적 영혼에 끊임없는 영감을 줄 것입니다.', imageUrl: 'https://placehold.co/400x300/2C5282/E2E8F0?text=리스본' },
+                    'ESTP': { name: '스페인, 바르셀로나', description: '낮과 밤 모두 역동적이며, 변화무쌍한 환경에서 기회를 포착하기 좋습니다.', detailedDescription: '외향 감각(Se)을 통해 끊임없는 활동과 자극을 추구하는 ESTP에게 바르셀로나는 잠들지 않는 도시입니다. 지중해의 활기 넘치는 해변, 맛있는 음식, 열정적인 사람들, 그리고 활발한 비즈니스 환경은 ESTP에게 수많은 기회와 즐길 거리를 제공합니다. 이곳에서 ESTP는 뛰어난 적응력(Ti)으로 변화를 즐기며 삶을 만끽할 수 있습니다.', imageUrl: 'https://placehold.co/400x300/2C5282/E2E8F0?text=바르셀로나' },
+                    'ESFP': { name: '미국, 마이애미', description: '긍정적이고 개방적인 분위기 속에서 연중 내내 해변의 활기를 느낄 수 있습니다.', detailedDescription: '사람들과 어울리며 현재의 즐거움(Se)을 만끽하는 것을 사랑하는 ESFP에게 마이애미는 지상낙원입니다. 화려한 해변, 신나는 음악, 그리고 개방적이고 사교적인 사람들은 ESFP가 자신의 매력을 마음껏 발산할 수 있는 최고의 무대를 제공합니다. 긍정적인 에너지 속에서 타인의 시선을 즐기는(Fi) ESFP에게 완벽한 환경입니다.', imageUrl: 'https://placehold.co/400x300/2C5282/E2E8F0?text=마이애미' },
+                    'INTJ': { name: '네덜란드, 아인트호벤', description: '기술과 디자인의 혁신 도시. 유능한 전문가들과 미래를 설계하기 좋습니다.', detailedDescription: '미래에 대한 비전(Ni)을 실현하기 위해 효율적인 시스템(Te)을 구축하고자 하는 INTJ에게 아인트호벤은 이상적인 곳입니다. 필립스로 대표되는 이 도시는 기술, 디자인, 지식이 결합하여 혁신을 만들어내는 허브입니다. 유능한 전문가들과 함께 독립적으로 자신의 비전을 구체화시켜 나가기에 완벽한 환경을 제공합니다.', imageUrl: 'https://placehold.co/400x300/2C5282/E2E8F0?text=아인트호벤' },
+                    'INTP': { name: '에스토니아, 탈린', description: '디지털화된 합리적인 사회. 개인의 자율성을 존중하여 아이디어 탐구에 이상적입니다.', detailedDescription: '논리적이고 합리적인 시스템(Ti)을 선호하는 INTP에게 전자정부로 유명한 탈린은 흥미로운 탐구 대상입니다. 불필요한 관료주의를 제거한 효율적인 사회 시스템은 INTP에게 편안함을 제공하며, 개인의 자율성을 존중하는 문화 속에서 누구의 방해도 받지 않고 새로운 아이디어와 가능성(Ne)을 탐구하는 데 몰두할 수 있습니다.', imageUrl: 'https://placehold.co/400x300/2C5282/E2E8F0?text=탈린' },
+                    'ENTJ': { name: '미국, 실리콘밸리', description: '세계 최고의 인재들과 경쟁하며 세상을 바꿀 비전을 실현하는 곳입니다.', detailedDescription: '원대한 비전(Ni)을 실현하기 위해 세상의 자원을 조직하고 이끌고자(Te) 하는 ENTJ에게 실리콘밸리는 꿈의 무대입니다. 세계 최고의 인재들과의 경쟁과 협력을 통해 자신의 능력을 증명하고, 세상을 바꿀 혁신을 이끌어갈 수 있는 최적의 환경입니다. 능력주의 문화는 ENTJ의 끝없는 성취욕을 자극할 것입니다.', imageUrl: 'https://placehold.co/400x300/2C5282/E2E8F0?text=실리콘밸리' },
+                    'ENTP': { name: '독일, 베를린', description: '스타트업과 예술가들의 허브. 끊임없이 새로운 아이디어를 실험하기 좋습니다.', detailedDescription: '새로운 아이디어와 가능성(Ne)에 항상 목마른 ENTP에게 베를린은 자유로운 지적 놀이터입니다. 저렴한 물가를 기반으로 다양한 배경의 사람들이 모여들어, 기존의 틀을 깨는 스타트업과 예술 활동이 끊임없이 일어납니다. 자유로운 분위기 속에서 다양한 사람들과 토론(Ti)하며 자신의 아이디어를 실험하기에 완벽한 도시입니다.', imageUrl: 'https://placehold.co/400x300/2C5282/E2E8F0?text=베를린' },
+                    'INFJ': { name: '스웨덴, 스톡홀름', description: '인권, 평등 등 진보한 가치를 중요하게 여기는 이상적인 사회의 모습과 가깝습니다.', detailedDescription: '더 나은 세상을 향한 깊은 통찰과 비전(Ni)을 가진 INFJ에게 스톡홀름은 그 이상을 실현할 수 있는 곳입니다. 사회적 평등, 인권, 환경 보호와 같은 진보적인 가치를 중요하게 여기는(Fe) 문화는 INFJ의 신념과 일치합니다. 개인의 내면 성찰을 존중하는 분위기 속에서 INFJ는 세상을 위한 자신의 역할을 찾아나갈 수 있습니다.', imageUrl: 'https://placehold.co/400x300/2C5282/E2E8F0?text=스톡홀름' },
+                    'INFP': { name: '뉴질랜드, 웰링턴', description: '자연 친화적이며 진정성을 존중하는 문화가 영혼을 편안하게 합니다.', detailedDescription: '자신의 진정한 가치와 신념(Fi)에 따라 살아가길 원하는 INFP에게 웰링턴은 마음의 고향과 같은 곳입니다. 광활한 대자연 속에서 상업주의보다 개인의 행복과 진정성을 존중하는 문화가 자리 잡고 있습니다. 이곳에서 INFP는 새로운 영감(Ne)을 얻고, 세상의 기준이 아닌 자신의 목소리에 귀 기울이며 살아갈 수 있습니다.', imageUrl: 'https://placehold.co/400x300/2C5282/E2E8F0?text=웰링턴' },
+                    'ENFJ': { name: '덴마크, 코펜하겐', description: '공동체적 유대감과 신뢰 기반 사회. 함께 성장하는 이상적인 공동체입니다.', detailedDescription: '사람들을 이끌어 더 나은 공동체를 만들고자 하는(Fe) ENFJ에게 코펜하겐은 살아있는 교과서입니다. \'휘게(Hygge)\' 문화로 대표되는 사회적 신뢰와 공동체 의식은 ENFJ가 추구하는 이상적인 사회의 모습(Ni)과 가깝습니다. 이곳에서 ENFJ는 사람들과의 따뜻한 유대 속에서 함께 성장하는 리더로서의 역할을 다할 수 있습니다.', imageUrl: 'https://placehold.co/400x300/2C5282/E2E8F0?text=코펜하겐' },
+                    'ENFP': { name: '캐나다, 밴쿠버', description: '다양성을 존중하는 개방적인 문화 속에서 잠재력을 펼칠 수 있습니다.', detailedDescription: '새로운 가능성(Ne)을 탐색하고 다양한 사람들과 교류하는 것을 즐기는 ENFP에게 밴쿠버는 최고의 환경입니다. 다양한 인종과 문화가 편견 없이 어우러지는 개방적인 분위기는 ENFP에게 무한한 영감을 줍니다. 자신의 신념(Fi)에 따라 긍정적인 변화를 추구하며, 수많은 사람들과 관계를 맺고 새로운 아이디어를 실현해나갈 수 있는 도시입니다.', imageUrl: 'https://placehold.co/400x300/2C5282/E2E8F0?text=밴쿠버' },
+                }
+            },
+            'travelDestinations': {
+                title: 'MBTI 유형별 여행지',
+                types: {
+                    'ISTJ': { name: '독일, 뮌헨', description: '정확한 시스템과 풍부한 역사. 계획에 따라 움직이는 완벽한 여행지입니다.', detailedDescription: '내향 감각(Si)으로 잘 짜인 계획과 예측 가능한 일정을 선호하는 ISTJ에게 뮌헨은 최고의 만족감을 줍니다. 세계 최고 수준의 대중교통 시스템, 명확한 안내 표지판, 그리고 체계적으로 관리되는(Te) 박물관과 명소들은 ISTJ가 스트레스 없이 여행에만 집중할 수 있게 해줍니다. 전통적인 맥주홀에서 역사의 흔적을 느끼는 것은 ISTJ에게 안정적인 즐거움을 선사할 것입니다.', imageUrl: 'https://placehold.co/400x300/38A169/E2E8F0?text=뮌헨' },
+                    'ISFJ': { name: '일본, 교토', description: '고요한 사원과 정갈한 거리. 평화로운 분위기 속에서 휴식을 취할 수 있습니다.', detailedDescription: 'ISFJ는 내향 감각(Si)을 통해 평화롭고 안정된 분위기를 선호하며, 타인을 배려하는(Fe) 문화에 편안함을 느낍니다. 교토의 고즈넉한 사찰, 잘 가꿔진 정원, 그리고 타인에게 폐를 끼치지 않으려는 조용한 배려의 문화는 ISFJ의 영혼을 충전시켜주는 최고의 여행지입니다. 전통을 존중하는 도시의 모습 속에서 ISFJ는 깊은 안정감을 느낄 수 있습니다.', imageUrl: 'https://placehold.co/400x300/38A169/E2E8F0?text=교토' },
+                    'ESTJ': { name: '미국, 뉴욕', description: '세계 경제의 중심지. 효율적이고 역동적인 에너지를 경험할 수 있습니다.', detailedDescription: '외향 사고(Te)를 통해 효율적인 시스템과 성취를 중요하게 생각하는 ESTJ에게 뉴욕은 살아있는 교과서와 같습니다. 빽빽한 마천루, 쉴 새 없이 움직이는 금융가, 그리고 세계 최고의 시스템들이 집약된 이 도시는 ESTJ에게 큰 지적 자극과 영감을 줍니다. 계획(Si)에 따라 효율적으로 도시를 탐험하며 성취감을 느낄 수 있는 최고의 여행지입니다.', imageUrl: 'https://placehold.co/400x300/38A169/E2E8F0?text=뉴욕' },
+                    'ESFJ': { name: '이탈리아, 로마', description: '따뜻한 사람들과 맛있는 음식. 사람들과 어울리며 즐거움을 나누는 여행지입니다.', detailedDescription: '외향 감정(Fe)이 주기능인 ESFJ는 사람들과의 교류와 유대감에서 가장 큰 행복을 느낍니다. 로마의 광장에 모여 담소를 나누는 사람들, 따뜻한 환대, 그리고 함께 음식을 나누는 문화는 ESFJ에게 최고의 즐거움을 선사합니다. 역사적인 명소(Si)를 배경으로 새로운 사람들과 어울리며 잊지 못할 추억을 만들 수 있습니다.', imageUrl: 'https://placehold.co/400x300/38A169/E2E8F0?text=로마' },
+                    'ISTP': { name: '뉴질랜드, 퀸스타운', description: '스릴 넘치는 액티비티의 천국. 온몸으로 자연을 체험하고 분석할 수 있습니다.', detailedDescription: '내향 사고(Ti)로 도구와 원리를 분석하고 외향 감각(Se)으로 직접 체험하는 것을 즐기는 ISTP에게 퀸스타운은 거대한 놀이터입니다. 번지점프, 스카이다이빙, 제트보트 등 다양한 액티비티를 통해 중력과 역학의 원리를 온몸으로 느끼며 스릴을 만끽할 수 있습니다. 자연이라는 거대한 시스템을 탐험하며 ISTP는 최고의 지적, 신체적 만족감을 얻을 것입니다.', imageUrl: 'https://placehold.co/400x300/38A169/E2E8F0?text=퀸스타운' },
+                    'ISFP': { name: '인도네시아, 발리', description: '아름다운 자연과 자유로운 예술가들의 섬. 내면의 예술성을 깨우는 여행지입니다.', detailedDescription: '내향 감정(Fi)을 통해 자신의 내면과 교감하고, 외향 감각(Se)으로 현재의 아름다움을 만끽하는 ISFP에게 발리는 영혼의 안식처입니다. 아름다운 해변에서 일몰을 감상하고, 요가와 명상으로 자신의 내면에 집중하며, 자유로운 예술가들의 작품에서 새로운 영감을 얻을 수 있습니다. 이곳에서 ISFP는 진정한 자신을 발견하는 여행을 할 수 있습니다.', imageUrl: 'https://placehold.co/400x300/38A169/E2E8F0?text=발리' },
+                    'ESTP': { name: '브라질, 리우데자네이루', description: '열정적인 축제와 해변 스포츠. 즉흥적이고 짜릿한 즐거움이 가득합니다.', detailedDescription: '외향 감각(Se)으로 현재의 자극과 스릴을 추구하는 ESTP에게 리우데자네이루는 열정의 도시입니다. 화려한 삼바 축제, 코파카바나 해변의 활기, 그리고 짜릿한 액티비티는 ESTP의 에너지를 폭발시키기에 충분합니다. 예측 불가능한 상황을 즐기며 즉흥적으로(Ti) 문제를 해결해나가는 과정에서 ESTP는 최고의 여행 경험을 할 것입니다.', imageUrl: 'https://placehold.co/400x300/38A169/E2E8F0?text=리우' },
+                    'ESFP': { name: '태국, 푸껫', description: '화려한 파티와 끝없는 즐길 거리. 사람들과 어울리며 에너지를 발산하는 곳입니다.', detailedDescription: '외향 감각(Se)으로 사람들과의 즐거운 경험을 사랑하는 ESFP에게 푸껫은 거대한 파티장과 같습니다. 아름다운 해변에서 열리는 파티, 맛있는 음식, 그리고 전 세계에서 모인 사람들과의 교류는 ESFP를 여행의 주인공으로 만들어 줄 것입니다. 주목받는 것을 즐기는(Fi) ESFP에게 잊지 못할 추억과 무대를 선사하는 최고의 여행지입니다.', imageUrl: 'https://placehold.co/400x300/38A169/E2E8F0?text=푸껫' },
+                    'INTJ': { name: '영국, 런던', description: '역사와 지식의 중심. 지적인 탐구를 통해 통찰을 얻는 여행지입니다.', detailedDescription: '내향 직관(Ni)으로 거대한 시스템과 역사의 흐름을 통찰하길 즐기는 INTJ에게 런던은 지적인 보물창고입니다. 대영박물관의 유물부터 현대 금융 시스템의 중심지까지, 과거와 현재를 아우르는 지식의 집합체를 탐험하며 INTJ는 자신만의 전략적(Te)인 분석을 완성할 수 있습니다. 이는 INTJ에게 최고의 지적 만족감을 주는 여행이 될 것입니다.', imageUrl: 'https://placehold.co/400x300/38A169/E2E8F0?text=런던' },
+                    'INTP': { name: '아이슬란드, 레이캬비크', description: '독특하고 기이한 자연. 세상의 근본 원리를 탐구하는 고독한 여행지입니다.', detailedDescription: '내향 사고(Ti)를 통해 세상의 논리적 원리를 탐구하고, 외향 직관(Ne)으로 새로운 가능성을 찾는 INTP에게 아이슬란드는 경이로운 실험실입니다. 빙하와 화산이 공존하는 독특한 자연환경은 INTP의 지적 호기심을 자극하며, 누구의 방해도 받지 않고 자신만의 생각에 깊이 몰두할 수 있는 완벽한 환경을 제공합니다.', imageUrl: 'https://placehold.co/400x300/38A169/E2E8F0?text=아이슬란드' },
+                    'ENTJ': { name: '아랍에미리트, 두바이', description: '불가능을 현실로 만드는 비전의 도시. 거대한 성취와 리더십을 목격할 수 있습니다.', detailedDescription: '외향 사고(Te)를 통해 거대한 목표를 성취하고자 하는 ENTJ에게 두바이는 비전(Ni)이 현실이 되는 과정을 보여주는 최고의 사례입니다. 사막 위에 세워진 세계 최고층 빌딩과 인공섬 등 인간의 한계를 뛰어넘는 프로젝트들은 ENTJ의 야망과 리더십에 강력한 영감을 줄 것입니다. 이곳에서 ENTJ는 자신의 비전을 더욱 크게 키울 수 있습니다.', imageUrl: 'https://placehold.co/400x300/38A169/E2E8F0?text=두바이' },
+                    'ENTP': { name: '네덜란드, 암스테르담', description: '자유와 관용의 도시. 새로운 아이디어와 열띤 토론을 즐길 수 있습니다.', detailedDescription: '외향 직관(Ne)으로 끊임없이 새로운 아이디어를 탐색하고 토론을 즐기는 ENTP에게 암스테르담은 자유로운 지적 놀이터입니다. 다양한 문화와 생각이 공존하는 관용적인 분위기 속에서, ENTP는 자신의 기발한 아이디어를 마음껏 펼치고 흥미로운 사람들과 지적인 논쟁(Ti)을 벌일 수 있습니다. 이는 ENTP에게 최고의 자극과 즐거움을 선사할 것입니다.', imageUrl: 'https://placehold.co/400x300/38A169/E2E8F0?text=암스테르담' },
+                    'INFJ': { name: '페루, 쿠스코', description: '잉카 문명의 신비로운 유적. 삶의 의미를 탐구하는 깊이 있는 여행지입니다.', detailedDescription: '내향 직관(Ni)으로 인간과 역사에 대한 깊은 통찰을 추구하는 INFJ에게 쿠스코는 영적인 순례지와 같습니다. 고대 잉카 문명의 신비로운 유적과 안데스 산맥의 장엄한 풍경 속에서, INFJ는 삶과 죽음, 그리고 인류의 보편적인 가치(Fe)에 대한 깊은 성찰의 시간을 가질 수 있습니다. 이는 단순한 관광을 넘어, INFJ의 내면을 성장시키는 여행이 될 것입니다.', imageUrl: 'https://placehold.co/400x300/38A169/E2E8F0?text=쿠스코' },
+                    'INFP': { name: '아일랜드, 더블린', description: '신화와 문학의 땅. 감성과 상상력을 자극하는 낭만적인 여행지입니다.', detailedDescription: '내향 감정(Fi)을 통해 자신만의 깊은 감성과 이상을 소중히 여기는 INFP에게 아일랜드는 살아있는 이야기책과 같습니다. 신화와 전설이 깃든 푸른 언덕, 위대한 작가들의 흔적이 남은 더블린의 골목을 거닐며 INFP는 자신의 상상력(Ne)을 마음껏 펼칠 수 있습니다. 이곳에서 INFP는 자신의 감성에 깊이 공명하는 낭만적인 여행을 경험할 것입니다.', imageUrl: 'https://placehold.co/400x300/38A169/E2E8F0?text=더블린' },
+                    'ENFJ': { name: '인도, 바라나시', description: '삶과 죽음이 공존하는 성스러운 강. 인류애에 대한 깊은 깨달음을 얻는 곳입니다.', detailedDescription: '외향 감정(Fe)을 통해 사람들과 깊이 교감하고 인류의 성장을 돕고자 하는 ENFJ에게 바라나시는 깊은 성찰을 안겨주는 여행지입니다. 갠지스 강가에서 펼쳐지는 수많은 사람들의 삶과 죽음, 그리고 종교적 의식을 통해 ENFJ는 인간의 보편적인 고뇌와 희망을 통찰(Ni)하고, 인류애에 대한 자신의 소명을 다시 한번 깨닫게 될 것입니다.', imageUrl: 'https://placehold.co/400x300/38A169/E2E8F0?text=바라나시' },
+                    'ENFP': { name: '아르헨티나, 부에노스아이레스', description: '탱고의 열정과 예술적 에너지. 새로운 영감과 만남이 가득한 여행지입니다.', detailedDescription: '외향 직관(Ne)으로 새로운 가능성과 만남을 찾아다니는 ENFP에게 부에노스아이레스는 열정의 도시입니다. 거리 곳곳에서 펼쳐지는 탱고 공연, 다채로운 예술 활동, 그리고 따뜻한 현지인들과의 교류는 ENFP의 창의적인 영감을 끊임없이 자극할 것입니다. 자신의 신념(Fi)에 따라 즉흥적으로 도시를 탐험하며, ENFP는 수많은 새로운 아이디어와 잊지 못할 인연을 만나게 될 것입니다.', imageUrl: 'https://placehold.co/400x300/38A169/E2E8F0?text=부에노스아이레스' },
+                }
+            },
+            'ideologies': {
+                title: 'MBTI 유형별 사상/주의',
+                types: {
+                    'ISTJ': { name: '의무론 (Deontology)', description: '결과보다 정해진 규칙과 의무를 따르는 것이 옳다고 믿습니다.', detailedDescription: '칸트로 대표되는 의무론은 어떤 행동의 도덕적 가치는 그 결과가 아닌, 행동 자체의 본질적인 규칙이나 의무에 따라 결정된다고 봅니다. 이는 과거부터 검증된 규칙과 절차(Si)를 신뢰하고, 이를 논리적이고 체계적으로(Te) 따르려는 ISTJ의 핵심 성향과 정확히 일치합니다. ISTJ에게는 \'옳은 일\'을 \'옳은 절차\'에 따라 하는 것이 무엇보다 중요합니다.', imageUrl: 'https://placehold.co/400x300/805AD5/E2E8F0?text=의무론' },
+                    'ISFJ': { name: '공동체주의 (Communitarianism)', description: '개인의 자유만큼이나 공동체의 안정과 유지를 중요하게 생각합니다.', detailedDescription: '공동체주의는 개인은 공동체 속에서 정체성을 찾으며, 공동의 선과 전통을 존중해야 한다고 주장합니다. 이는 자신이 속한 집단의 안정(Si)을 지키고, 그 안의 구성원들을 배려하며 조화를 이루려는(Fe) ISFJ의 삶의 태도와 깊은 유사성을 보입니다. ISFJ는 공동체를 위한 헌신에서 가장 큰 보람을 느낍니다.', imageUrl: 'https://placehold.co/400x300/805AD5/E2E8F0?text=공동체주의' },
+                    'ESTJ': { name: '공리주의 (Utilitarianism)', description: '공동체 전체에 가장 이롭고 효율적인 결과를 중시합니다.', detailedDescription: '\'최대 다수의 최대 행복\'으로 요약되는 공리주의는, 어떤 행동의 옳고 그름은 그 결과가 공동체에 얼마나 많은 유용성(utility)과 행복을 가져오는가에 따라 결정된다고 봅니다. 이는 외부 세계를 효율적으로 조직하고(Te) 가시적인 성과를 내려는 ESTJ의 목표 지향적 성향과 완벽하게 부합합니다. ESTJ는 가장 효율적인 방법(Si)으로 최고의 결과를 이끌어내는 리더입니다.', imageUrl: 'https://placehold.co/400x300/805AD5/E2E8F0?text=공리주의' },
+                    'ESFJ': { name: '사회주의 (Socialism)', description: '개인의 성공보다는 집단의 화합과 복지를 우선시합니다.', detailedDescription: '사회주의의 핵심 가치 중 하나는 개인의 이익보다 사회 전체의 복지와 평등을 우선하는 것입니다. 이는 외향 감정(Fe)을 통해 주변 사람들과의 조화와 유대를 무엇보다 중요하게 생각하는 ESFJ의 성향과 맞닿아 있습니다. ESFJ는 모든 구성원이 소외되지 않고 안정적인(Si) 공동체 속에서 행복하기를 바랍니다.', imageUrl: 'https://placehold.co/400x300/805AD5/E2E8F0?text=사회주의' },
+                    'ISTP': { name: '실용주의 (Pragmatism)', description: '거창한 이론보다 \'지금 당장 작동하는 것\'을 중시합니다.', detailedDescription: '실용주의는 진리나 가치를 추상적인 개념이 아닌, 실제 현실에서 유용한 결과를 낳는 \'도구\'로 봅니다. 이는 복잡한 이론보다 눈앞의 문제를 논리적으로 분석(Ti)하고, 가장 효율적인 해결책을 즉각적으로 찾아내려는(Se) ISTP의 태도와 같습니다. ISTP에게는 \'그것이 실제로 작동하는가?\'가 가장 중요한 질문입니다.', imageUrl: 'https://placehold.co/400x300/805AD5/E2E8F0?text=실용주의' },
+                    'ISFP': { name: '심미주의 (Aestheticism)', description: '실용성보다는 순수한 미적 경험과 자기표현을 중시합니다.', detailedDescription: '\'예술을 위한 예술\'을 표방하는 심미주의는 도덕적, 실용적 가치에서 벗어나 순수한 아름다움을 최고의 가치로 둡니다. 이는 자신의 내적 가치와 감정(Fi)에 충실하며, 오감을 통해 현재의 아름다움을 만끽하는(Se) ISFP의 삶의 태도와 완벽하게 일치합니다. ISFP는 삶의 모든 순간에서 아름다움을 발견하고 표현하고자 하는 예술가입니다.', imageUrl: 'https://placehold.co/400x300/805AD5/E2E8F0?text=심미주의' },
+                    'ESTP': { name: '자유지상주의 (Libertarianism)', description: '개인의 선택과 자유를 무엇보다 중요하게 여기며 외부 간섭을 최소화합니다.', detailedDescription: '자유지상주의는 개인의 자유와 선택의 권리를 최우선 가치로 삼으며, 외부의 강제나 간섭을 최소화해야 한다고 주장합니다. 이는 규칙에 얽매이지 않고 현재의 상황(Se)을 즐기며, 자신의 논리적 판단(Ti)에 따라 즉흥적으로 행동하길 원하는 ESTP의 성향과 강하게 연결됩니다. ESTP는 자신의 삶을 스스로 개척해나가는 모험가입니다.', imageUrl: 'https://placehold.co/400x300/805AD5/E2E8F0?text=자유지상주의' },
+                    'ESFP': { name: '다원주의 (Pluralism)', description: '다양한 가치와 삶의 방식을 존중하고 포용하는 태도를 보입니다.', detailedDescription: '다원주의는 세상에 단 하나의 절대적인 진리나 가치는 없으며, 다양한 가치관과 삶의 방식이 동등하게 존중받아야 한다고 봅니다. 이는 다양한 사람들과의 교류(Se)를 즐기고, 각자의 개성과 가치를 존중하며(Fi) 긍정적인 관계를 맺어가는 ESFP의 개방적인 태도와 같습니다. ESFP에게 세상은 다양한 즐거움으로 가득한 축제의 장입니다.', imageUrl: 'https://placehold.co/400x300/805AD5/E2E8F0?text=다원주의' },
+                    'INTJ': { name: '객관주의 (Objectivism)', description: '이성을 통해 객관적인 현실을 파악하고 능력으로 성취하는 것을 최고선으로 여깁니다.', detailedDescription: '아인 랜드가 주창한 객관주의는, 독립적인 개인이 이성적 사유를 통해 객관적 현실을 파악하고, 자신의 능력으로 위대한 것을 성취하는 것을 최고의 도덕적 목표로 삼습니다. 이는 미래에 대한 통찰(Ni)을 바탕으로, 감정에 휘둘리지 않고 논리적인 시스템(Te)을 구축하여 목표를 달성하려는 INTJ의 모습과 매우 유사합니다.', imageUrl: 'https://placehold.co/400x300/805AD5/E2E8F0?text=객관주의' },
+                    'INTP': { name: '논리실증주의 (Logical Positivism)', description: '논리적으로 검증 가능한 것만을 지식으로 인정하려 합니다.', detailedDescription: '논리실증주의는 경험적으로 검증될 수 있거나, 논리적으로 분석 가능한 명제만이 의미있는 지식이라고 주장합니다. 이는 세상의 근본적인 원리를 논리적으로 분석(Ti)하고, 애매하거나 비과학적인 주장을 끊임없이 의심하며 새로운 가능성(Ne)을 탐색하는 INTP의 지적 태도와 완벽하게 부합합니다. INTP에게 진리는 엄격한 논리의 체계를 통과해야만 합니다.', imageUrl: 'https://placehold.co/400x300/805AD5/E2E8F0?text=논리실증주의' },
+                    'ENTJ': { name: '능력주의 (Meritocracy)', description: '능력 있는 사람이 리더가 되어 시스템을 이끌어야 한다고 믿습니다.', detailedDescription: '능력주의는 개인의 지위나 보상이 출신 배경이 아닌, 오직 재능과 노력, 즉 능력에 의해서만 결정되어야 한다는 사상입니다. 이는 비효율적인 시스템을 개혁하고(Te) 가장 유능한 인재를 적재적소에 배치하여 원대한 비전(Ni)을 실현하고자 하는 ENTJ의 리더십 철학과 정확히 일치합니다. ENTJ는 능력으로 증명하는 야망가입니다.', imageUrl: 'https://placehold.co/400x300/805AD5/E2E8F0?text=능력주의' },
+                    'ENTP': { name: '해체주의 (Deconstructionism)', description: '고정된 의미를 해체하고 다양한 해석의 가능성을 탐구합니다.', detailedDescription: '데리다로 대표되는 해체주의는, 세상의 모든 텍스트와 개념에는 고정된 중심 의미가 없으며, 끝없는 해석의 가능성만이 존재한다고 봅니다. 이는 기존의 통념과 시스템에 끊임없이 의문을 던지고(Ne), 논리적 허점을 파고들어(Ti) 새로운 관점을 제시하는 것을 즐기는 ENTP의 지적 유희와 같습니다. ENTP에게 \'당연한 것\'은 없습니다.', imageUrl: 'https://placehold.co/400x300/805AD5/E2E8F0?text=해체주의' },
+                    'INFJ': { name: '인도주의 (Humanitarianism)', description: '전 인류의 행복과 안녕을 추구하며 더 나은 미래를 꿈꿉니다.', detailedDescription: '인도주의는 인종, 종교, 국적을 초월하여 모든 인간의 존엄성을 존중하고, 고통받는 이들을 돕는 것을 최고의 가치로 여깁니다. 이는 인류의 미래에 대한 깊은 통찰(Ni)을 바탕으로, 모든 사람들을 위해 헌신하고(Fe) 더 나은 세상을 만들고자 하는 INFJ의 이상과 정확히 일치합니다. INFJ는 인류를 위한 선의의 옹호자입니다.', imageUrl: 'https://placehold.co/400x300/805AD5/E2E8F0?text=인도주의' },
+                    'INFP': { name: '초월주의 (Transcendentalism)', description: '사회적 관습보다 개인의 직관과 양심을 따르는 것을 중시합니다.', detailedDescription: '에머슨과 소로로 대표되는 초월주의는 사회적 제도나 관습보다, 개인의 내면에 있는 직관과 양심이 진리의 더 중요한 원천이라고 주장합니다. 이는 세상의 기준보다 자신의 진실된 내면의 가치(Fi)를 따르며, 이상적인 삶의 새로운 가능성(Ne)을 탐색하는 INFP의 삶의 태도와 완벽하게 부합합니다.', imageUrl: 'https://placehold.co/400x300/805AD5/E2E8F0?text=초월주의' },
+                    'ENFJ': { name: '이타주의 (Altruism)', description: '타인의 발전을 돕고 공동의 이상을 실현하는 것에서 기쁨을 느낍니다.', detailedDescription: '이타주의는 자신의 이익보다 타인의 행복과 안녕을 우선시하는 윤리적 태도입니다. 이는 사람들의 잠재력을 이끌어내고(Fe) 그들의 성장을 돕는 것에서 가장 큰 보람을 느끼며, 공동의 이상적인 비전(Ni)을 향해 함께 나아가도록 독려하는 ENFJ의 교육자적, 지도자적 면모와 가장 깊이 연결됩니다.', imageUrl: 'https://placehold.co/400x300/805AD5/E2E8F0?text=이타주의' },
+                    'ENFP': { name: '진보주의 (Progressivism)', description: '현상 유지를 거부하고 더 나은 미래를 위해 끊임없이 변화와 개혁을 추구합니다.', detailedDescription: '진보주의는 사회는 끊임없이 발전하고 개선될 수 있다는 믿음을 바탕으로, 현상 유지를 거부하고 새로운 아이디어와 개혁을 통해 더 나은 미래를 만들고자 합니다. 이는 새로운 가능성(Ne)을 탐색하며 긍정적인 변화를 전파하고, 자신의 신념(Fi)에 따라 더 나은 세상을 위해 열정적으로 행동하는 ENFP의 모습과 완벽하게 일치합니다.', imageUrl: 'https://placehold.co/400x300/805AD5/E2E8F0?text=진보주의' },
+                }
+            },
+            'games': {
+                title: 'MBTI 유형별 추천 스팀 게임',
+                types: {
+                    'ISTJ': { 
+                        name: '팩토리오 (Factorio)', 
+                        description: '자원 채취부터 공장 자동화까지, 모든 것을 체계적으로 설계하고 최적화하는 게임입니다.', 
+                        detailedDescription: '내향 감각(Si)으로 검증되고 효율적인 방식을 선호하며, 외향 사고(Te)로 모든 것을 논리적으로 통제하려는 ISTJ에게 팩토리오는 최고의 놀이터입니다. 무에서 시작해 거대한 자동화 공장을 건설하는 과정은, 장기적인 계획과 꼼꼼한 시스템 설계를 통해 안정적인 결과를 만들어내는 ISTJ의 성향을 완벽하게 만족시킵니다.', 
+                        imageUrl: 'https://placehold.co/400x300/D4A373/FFFFFF?text=Factorio' 
+                    },
+                    'ISFJ': { 
+                        name: '스타듀 밸리 (Stardew Valley)', 
+                        description: '황폐해진 할아버지의 농장을 물려받아, 마을 사람들과 교류하며 농장을 가꾸는 힐링 게임입니다.', 
+                        detailedDescription: 'ISFJ는 자신이 속한 공동체의 안정(Si)을 중요하게 여기고, 구성원들을 돌보는 것(Fe)에서 큰 보람을 느낍니다. 스타듀 밸리는 계절의 변화에 맞춰 농작물을 기르고, 마을 사람들의 이야기를 들어주며 관계를 맺는 따뜻한 경험을 제공합니다. 이는 ISFJ의 헌신적인 수호자적 기질에 깊은 만족감을 줍니다.', 
+                        imageUrl: 'https://placehold.co/400x300/D4A373/FFFFFF?text=Stardew+Valley' 
+                    },
+                    'ESTJ': { 
+                        name: '시티즈: 스카이라인 (Cities: Skylines)', 
+                        description: '도시의 시장이 되어 도로, 구역, 공공시설 등을 관리하며 거대한 대도시를 건설하는 시뮬레이션 게임입니다.', 
+                        detailedDescription: '외부 세계를 효율적으로 조직하고 관리하려는(Te) ESTJ에게 시티즈: 스카이라인은 자신의 경영 능력을 증명할 최고의 무대입니다. 교통, 예산, 시민 만족도 등 수많은 데이터를 바탕으로 가장 효율적인 도시 시스템을 구축하고(Si), 자신의 계획이 거대한 성공으로 이어지는 것을 지켜보는 과정은 ESTJ의 성취욕을 완벽하게 충족시킵니다.', 
+                        imageUrl: 'https://placehold.co/400x300/D4A373/FFFFFF?text=Cities+Skylines' 
+                    },
+                    'ESFJ': { 
+                        name: '애니멀 크로싱: 뉴 호라이즌 (Animal Crossing: NH)', 
+                        description: '무인도로 이주하여 귀여운 동물 주민들과 함께 섬을 꾸미고 교류하며 슬로우 라이프를 즐기는 게임입니다.', 
+                        detailedDescription: 'ESFJ는 사람들과의 조화로운 관계(Fe)와 안정적인 소속감(Si)을 통해 에너지를 얻습니다. 이 게임은 이웃 주민들과의 따뜻한 교류, 함께 만들어가는 마을 행사, 그리고 커뮤니티의 발전에 기여하는 경험을 핵심으로 합니다. 이는 주변 사람들을 챙기고 사회적 유대를 중요시하는 ESFJ에게 최고의 힐링을 선사합니다.', 
+                        imageUrl: 'https://placehold.co/400x300/D4A373/FFFFFF?text=Animal+Crossing' 
+                    },
+                    'ISTP': { 
+                        name: '엘든 링 (Elden Ring)', 
+                        description: '광활하고 위험한 세계를 탐험하며, 강력한 적들의 패턴을 분석하고 격파하는 액션 RPG입니다.', 
+                        detailedDescription: 'ISTP는 복잡한 시스템의 원리를 논리적으로 분석(Ti)하고, 뛰어난 신체 감각(Se)으로 현재의 위기에 대응하는 것을 즐깁니다. 엘든 링의 정교한 전투 시스템은 적의 패턴을 분석하고, 장비의 특성을 이해하며, 순발력 있게 대응하는 능력을 요구합니다. 이는 ISTP의 문제 해결 능력과 장인 정신을 극한으로 자극하는 최고의 도전입니다.', 
+                        imageUrl: 'https://placehold.co/400x300/D4A373/FFFFFF?text=Elden+Ring' 
+                    },
+                    'ISFP': { 
+                        name: '그리스 (GRIS)', 
+                        description: '슬픔을 잃어버린 소녀의 여정을 따라, 수채화 같은 아름다운 세계를 탐험하는 감성적인 플랫포머 게임입니다.', 
+                        detailedDescription: '자신만의 내면세계와 감정(Fi)을 소중히 여기는 ISFP에게 GRIS는 한 편의 예술 작품과 같습니다. 대사 한 마디 없이, 색채와 음악, 그리고 아름다운 풍경(Se)만으로 깊은 감정적 서사를 전달하는 이 게임은 ISFP의 예술가적 영혼에 깊은 공명과 감동을 선사합니다.', 
+                        imageUrl: 'https://placehold.co/400x300/D4A373/FFFFFF?text=GRIS' 
+                    },
+                    'ESTP': { 
+                        name: '에이펙스 레전드 (Apex Legends)', 
+                        description: '빠른 속도감과 화려한 액션 속에서, 팀원들과 함께 최후의 1인이 되기 위해 경쟁하는 배틀로얄 게임입니다.', 
+                        detailedDescription: 'ESTP는 현재의 자극적인 상황(Se)을 즐기며, 뛰어난 순발력으로 즉흥적인 해결책(Ti)을 찾아냅니다. 에이펙스 레전드의 정신없는 전장은 ESTP에게 최고의 놀이터입니다. 변화무쌍한 환경에 빠르게 적응하고, 위기 상황을 기회로 만들며, 짜릿한 승리를 쟁취하는 과정은 ESTP의 모험가적 기질을 완벽하게 만족시킵니다.', 
+                        imageUrl: 'https://placehold.co/400x300/D4A373/FFFFFF?text=Apex+Legends' 
+                    },
+                    'ESFP': { 
+                        name: '파이널 판타지 14 온라인 (Final Fantasy XIV)', 
+                        description: '수많은 유저들과 함께 장대한 스토리를 체험하고, 화려한 전투와 다양한 커뮤니티 활동을 즐기는 MMORPG입니다.', 
+                        detailedDescription: 'ESFP는 사람들과의 즐거운 교류(Se)와 자기표현(Fi)을 통해 삶의 에너지를 얻는 타고난 스타입니다. 파이널 판타지 14는 감동적인 스토리, 화려한 비주얼의 전투, 그리고 하우징, 연주, 패션 등 자신을 표현할 수 있는 무한한 콘텐츠를 제공합니다. 이는 ESFP가 가상 세계의 주인공이 되어 빛날 수 있는 최고의 무대입니다.', 
+                        imageUrl: 'https://placehold.co/400x300/D4A373/FFFFFF?text=FFXIV' 
+                    },
+                    'INTJ': { 
+                        name: '스텔라리스 (Stellaris)', 
+                        description: '자신만의 우주 제국을 이끌며 외교, 전쟁, 연구를 통해 은하계를 정복하는 대전략 시뮬레이션 게임입니다.', 
+                        detailedDescription: '장기적인 비전(Ni)을 수립하고, 이를 실현하기 위해 효율적인 시스템(Te)을 구축하는 INTJ에게 스텔라리스는 궁극의 전략 게임입니다. 수백 년에 걸친 제국의 흥망성쇠를 설계하고, 복잡한 변수들을 통제하며 자신의 통찰력이 거대한 결과로 이어지는 것을 지켜보는 과정은 INTJ에게 최고의 지적 희열을 선사합니다.', 
+                        imageUrl: 'https://placehold.co/400x300/D4A373/FFFFFF?text=Stellaris' 
+                    },
+                    'INTP': { 
+                        name: '커벌 스페이스 프로그램 (Kerbal Space Program)', 
+                        description: '물리 법칙에 기반하여 자신만의 로켓과 우주선을 만들어 우주를 탐사하는 시뮬레이션 게임입니다.', 
+                        detailedDescription: 'INTP는 복잡한 시스템의 논리적 원리(Ti)를 파고들고, 기발한 아이디어(Ne)를 실험하는 것을 즐깁니다. 이 게임은 실제와 같은 물리 법칙을 이해하고, 수많은 부품을 조립해 온갖 기상천외한 로켓을 만들어보는 지적 놀이터입니다. 성공보다 실패를 통해 배우는 과정 자체를 즐기는 INTP에게 완벽한 게임입니다.', 
+                        imageUrl: 'https://placehold.co/400x300/D4A373/FFFFFF?text=KSP' 
+                    },
+                    'ENTJ': { 
+                        name: '토탈 워: 워해머 3 (Total War: WARHAMMER III)', 
+                        description: '전설적인 군주가 되어 거대한 군대를 지휘하고, 치밀한 전략으로 판타지 세계의 패권을 차지하는 게임입니다.', 
+                        detailedDescription: 'ENTJ는 거대한 비전(Ni)을 실현하기 위해 군대를 조직하고 효율적으로 지휘하려는(Te) 타고난 통솔자입니다. 토탈 워는 제국을 경영하는 대전략과 수만 명의 군사를 실시간으로 지휘하는 전술 전투를 결합하여, ENTJ가 자신의 전략적 재능을 마음껏 펼칠 수 있는 완벽한 전장을 제공합니다.', 
+                        imageUrl: 'https://placehold.co/400x300/D4A373/FFFFFF?text=Total+War' 
+                    },
+                    'ENTP': { 
+                        name: '디스코 엘리시움 (Disco Elysium)', 
+                        description: '전투가 없는 독특한 RPG로, 기이한 탐정이 되어 수많은 사상과 대화를 통해 미스터리를 파헤치는 게임입니다.', 
+                        detailedDescription: '기존의 틀을 깨는 새로운 아이디어(Ne)와 지적인 논쟁(Ti)을 즐기는 ENTP에게 디스코 엘리시움은 최고의 지적 유희입니다. 정답이 없는 수많은 선택지와 철학적인 대화 속에서, ENTP는 자신만의 논리를 구축하고 세상의 부조리함을 파헤치며 누구도 생각지 못한 방식으로 사건을 해결해나갈 수 있습니다.', 
+                        imageUrl: 'https://placehold.co/400x300/D4A373/FFFFFF?text=Disco+Elysium' 
+                    },
+                    'INFJ': { 
+                        name: '데스 스트랜딩 (Death Stranding)', 
+                        description: '단절된 인류를 다시 연결하기 위해 황폐한 세계를 여행하는, 깊고 상징적인 스토리를 담은 게임입니다.', 
+                        detailedDescription: '인류의 미래에 대한 깊은 통찰(Ni)과 공동체의 연결(Fe)을 중요시하는 INFJ에게 데스 스트랜딩은 단순한 게임을 넘어선 철학적 경험입니다. \'연결\'이라는 게임의 핵심 주제와, 삶과 죽음에 대한 수많은 은유는 INFJ의 내면에 깊은 울림을 주며, 더 나은 미래를 향한 자신의 소명을 되돌아보게 만듭니다.', 
+                        imageUrl: 'https://placehold.co/400x300/D4A373/FFFFFF?text=Death+Stranding' 
+                    },
+                    'INFP': { 
+                        name: '라이프 이즈 스트레인지 (Life is Strange)', 
+                        description: '시간을 되돌리는 능력을 가진 소녀가 되어, 자신의 선택을 통해 미래를 바꾸어 나가는 어드벤처 게임입니다.', 
+                        detailedDescription: 'INFP는 자신의 진실된 가치(Fi)에 따라 옳은 선택을 하고 싶어하며, 그로 인해 펼쳐질 다양한 가능성(Ne)을 탐구합니다. 이 게임은 플레이어에게 끊임없이 도덕적인 딜레마를 던지고, 어떤 선택이 진정으로 옳은 것인지 깊이 고민하게 만듭니다. 이는 INFP가 자신의 신념을 탐색하는 감성적인 여정과 같습니다.', 
+                        imageUrl: 'https://placehold.co/400x300/D4A373/FFFFFF?text=Life+is+Strange' 
+                    },
+                    'ENFJ': { 
+                        name: '매스 이펙트: 레전더리 에디션 (Mass Effect™ LE)', 
+                        description: '함선 \'노르망디\'의 셰퍼드 사령관이 되어, 다양한 동료들을 이끌고 은하계를 구원하는 SF RPG입니다.', 
+                        detailedDescription: '사람들에게 영감을 주고 이끌어(Fe) 공동의 이상적인 목표(Ni)를 달성하려는 ENFJ에게 매스 이펙트는 완벽한 리더십 시뮬레이터입니다. 다양한 배경을 가진 동료들의 신뢰를 얻고, 그들의 성장을 도우며, 은하계의 운명을 건 거대한 선택을 내리는 과정은 ENFJ의 정의로운 사회운동가적 면모를 완벽하게 만족시킵니다.', 
+                        imageUrl: 'https://placehold.co/400x300/D4A373/FFFFFF?text=Mass+Effect' 
+                    },
+                    'ENFP': { 
+                        name: '발더스 게이트 3 (Baldur\'s Gate 3)', 
+                        description: '엄청난 자유도를 바탕으로, 동료들과 함께 자신만의 방식으로 이야기를 만들어나가는 판타지 RPG입니다.', 
+                        detailedDescription: '무한한 가능성(Ne)을 탐험하고, 진정한 자신(Fi)을 표현하는 것을 사랑하는 ENFP에게 발더스 게이트 3는 꿈의 놀이터입니다. 정해진 길 없이 상상력을 발휘해 문제를 해결하고, 매력적인 동료들과 깊은 관계를 맺으며 자신만의 서사를 써 내려가는 경험은, ENFP의 열정적인 활동가 정신에 끝없는 영감을 불어넣어 줄 것입니다.', 
+                        imageUrl: 'https://placehold.co/400x300/D4A373/FFFFFF?text=Baldurs+Gate+3' 
+                    },
+                }
+            },
+        };
+
+        const conceptSelector = document.getElementById('concept-selector');
+        const currentConceptTitle = document.getElementById('current-concept-title');
+        const mainContent = document.getElementById('main-content');
+        
+        // --- 세부 정보창 관련 요소들 ---
+        const detailView = document.getElementById('detail-view');
+        const detailContent = document.getElementById('detail-content');
+        const backButton = document.getElementById('back-button');
+
+        // 세부 정보창을 보여주는 함수
+        function showDetailView(type, conceptKey) {
+            const concept = mbtiData[conceptKey];
+            const typeConceptData = concept.types[type];
+            const typeAttributeData = mbtiAttributes[type];
+            if (!typeConceptData || !typeAttributeData) return;
+
+            // 속성 태그 HTML 생성
+            const attributesHtml = typeAttributeData.attributes.map(attr => 
+                `<span class="attribute-tag text-sm font-semibold mr-2 mb-2 px-3 py-1 rounded-full">${attr}</span>`
+            ).join('');
+
+            // 세부 정보창 내용 채우기
+            detailContent.innerHTML = `
+                <div class="text-center">
+                    <h3 class="text-4xl font-bold text-blue-300">${type}</h3>
+                    <p class="text-lg text-gray-400 mt-1">${typeAttributeData.title}</p>
+                    <div class="flex flex-wrap justify-center my-4">
+                        ${attributesHtml}
+                    </div>
+                </div>
+                <div class="w-full max-w-sm mx-auto aspect-video my-4 rounded-lg overflow-hidden bg-gray-700">
+                     <img src="${typeConceptData.imageUrl}" alt="${typeConceptData.name}" class="w-full h-full object-cover">
+                </div>
+                <h4 class="text-2xl font-semibold text-gray-200 mt-4">${typeConceptData.name}</h4>
+                <p class="text-gray-300 text-base mt-4 text-left leading-relaxed">${typeConceptData.detailedDescription}</p>
+            `;
+            
+            // 메인 컨텐츠 숨기고 세부 정보창 보이기
+            document.getElementById('main-content').parentElement.parentElement.classList.add('hidden');
+            detailView.classList.remove('hidden');
+        }
+
+        // 세부 정보창을 숨기는 함수
+        function hideDetailView() {
+            document.getElementById('main-content').parentElement.parentElement.classList.remove('hidden');
+            detailView.classList.add('hidden');
+        }
+
+        // '뒤로가기' 버튼에 클릭 이벤트 연결
+        backButton.addEventListener('click', hideDetailView);
+
+        // 컨셉에 따라 메인 컨텐츠를 렌더링하는 함수
+        function renderContent(conceptKey) {
+            const concept = mbtiData[conceptKey];
+            if (!concept) return;
+
+            currentConceptTitle.textContent = concept.title;
+            
+            const sjGrid = document.getElementById('sj-grid');
+            const spGrid = document.getElementById('sp-grid');
+            const ntGrid = document.getElementById('nt-grid');
+            const nfGrid = document.getElementById('nf-grid');
+
+            [sjGrid, spGrid, ntGrid, nfGrid].forEach(grid => grid.innerHTML = '');
+
+            const mbtiGroups = {
+                'SJ': { types: ['ISTJ', 'ISFJ', 'ESTJ', 'ESFJ'], container: sjGrid },
+                'SP': { types: ['ISTP', 'ISFP', 'ESTP', 'ESFP'], container: spGrid },
+                'NT': { types: ['INTJ', 'INTP', 'ENTJ', 'ENTP'], container: ntGrid },
+                'NF': { types: ['INFJ', 'INFP', 'ENFJ', 'ENFP'], container: nfGrid },
+            };
+
+            Object.values(mbtiGroups).forEach(group => {
+                group.types.forEach(type => {
+                    const typeData = concept.types[type];
+                    if (typeData) {
+                        const card = document.createElement('div');
+                        card.className = 'card rounded-lg p-4 flex flex-col items-center text-center shadow-lg border border-gray-700';
+                        
+                        card.innerHTML = `
+                            <h3 class="text-2xl font-bold text-blue-300">${type}</h3>
+                            <p class="text-lg font-semibold text-gray-200 mt-2 h-14 flex items-center justify-center">${typeData.name}</p>
+                            <div class="w-full aspect-video my-4 rounded-md overflow-hidden bg-gray-700">
+                                 <img src="${typeData.imageUrl}" alt="${typeData.name}" class="w-full h-full object-cover">
+                            </div>
+                            <p class="text-gray-400 text-sm">${typeData.description}</p>
+                        `;
+                        
+                        // 각 카드에 클릭 이벤트 리스너 추가
+                        card.addEventListener('click', () => showDetailView(type, conceptKey));
+                        
+                        group.container.appendChild(card);
+                    }
+                });
+            });
+        }
+
+        // 선택 버튼들을 렌더링하는 함수
+        function renderButtons() {
+            // 데이터 순서 변경
+            const conceptOrder = ['ideologies', 'games', 'weapons', 'supercars', 'countries', 'travelDestinations'];
+            const orderedData = {};
+            conceptOrder.forEach(key => {
+                if (mbtiData[key]) {
+                    orderedData[key] = mbtiData[key];
+                }
+            });
+            // 나머지 키 추가 (순서에 없는 경우)
+            Object.keys(mbtiData).forEach(key => {
+                if (!orderedData[key]) {
+                    orderedData[key] = mbtiData[key];
+                }
+            });
+
+
+            Object.keys(orderedData).forEach(key => {
+                const button = document.createElement('button');
+                button.className = 'concept-btn bg-gray-700 hover:bg-blue-600 text-gray-200 font-bold py-2 px-4 rounded-full';
+                button.textContent = mbtiData[key].title;
+                button.dataset.conceptKey = key;
+
+                button.addEventListener('click', () => {
+                    document.querySelectorAll('.concept-btn').forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    renderContent(key);
+                });
+
+                conceptSelector.appendChild(button);
+            });
+        }
+
+        // --- 초기화 ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderButtons();
+            
+            const firstButton = conceptSelector.querySelector('.concept-btn');
+            if (firstButton) {
+                // ideologies를 기본으로 선택하도록 변경
+                const initialConceptKey = 'ideologies';
+                document.querySelector(`[data-concept-key="${initialConceptKey}"]`).classList.add('active');
+                renderContent(initialConceptKey);
+            }
+        });
+    </script>
+</body>
+</html>
